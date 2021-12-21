@@ -1,0 +1,27 @@
+load("@io_bazel_rules_docker//container:container.bzl", "container_image", "container_layer", "container_push")
+load("@io_bazel_rules_docker//docker/package_managers:download_pkgs.bzl", "download_pkgs")
+load("@io_bazel_rules_docker//docker/package_managers:install_pkgs.bzl", "install_pkgs")
+load("@io_bazel_rules_docker//docker/util:run.bzl", "container_run_and_extract")
+load("@com_github_lanofdoom_steamcmd//:defs.bzl", "steamcmd_update")
+
+# THis is an example
+
+steamcmd_update(
+    name = "server",
+    app_ids = [90],
+)
+
+container_layer(
+    name = "server_layer",
+    directory = "/opt/game",
+    tars = [
+        ":server/app.tar.gz",
+    ],
+)
+
+container_image(
+    name = "server_image",
+    base = "@com_github_lanofdoom_steamcmd//:debian_with_i386",
+    layers = [":server_layer"],
+    user = "nobody",
+)
