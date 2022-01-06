@@ -1,20 +1,54 @@
-load("@io_bazel_rules_docker//docker/util:run.bzl", "container_run_and_extract")
-load("@io_bazel_rules_docker//container:container.bzl", "container_image", "container_layer")
+load("@io_bazel_rules_docker//container:container.bzl", "container_layer")
+load(
+    "@io_bazel_rules_docker//container:layer.bzl",
+    _layer = "layer",
+)
+load("@bazel_skylib//lib:dicts.bzl", "dicts")
 
-# Download an application from steam. The output of this macro is a tar containing the application.
-def steamcmd_update(name, app_ids, visibility = None):
-    app_update_string = ""
-    for app_id in app_ids:
-        app_update_string += "+app_update " + str(app_id) + " "
+def _steam_depot_layer(ctx):
+    dl_dir = ctx.actions.declare_directory("{}".format(ctx.label.name))
 
-    container_run_and_extract(
-        name = name,
-        extract_file = "/app.tar.gz",
-        commands = [
-            "/usr/games/steamcmd +@ShutdownOnFailedCommand 1 +force_install_dir /opt/game +login anonymous " + app_update_string + "validate +quit",
-            "rm -rf /opt/game/steamapps",
-            "tar -czvf /app.tar.gz -C /opt/game/ .",
-        ],
-        image = "@com_github_lanofdoom_steamcmd//:steamcmd.tar",
-        visibility = visibility,
+    args = ctx.actions.args()
+    if ctx.attr.app:
+        args.add("-app", ctx.attr.app)
+    if ctx.attr.depot:
+        args.add("-depot", ctx.attr.depot)
+    if ctx.attr.depot:
+        args.add("-manifest", ctx.attr.manifest)
+    args.add("-dir", dl_dir.path)
+    args.add("-verify")
+
+    ctx.actions.run(
+        outputs = [dl_dir],
+        arguments = [args],
+        executable = ctx.executable._depotdownloader,
+        execution_requirements = {
+            "no-sandbox": "1",  # TODO: remove
+            "no-remote-cache": "1",
+        },
+        progress_message = "Downlading Steam App id={} depot={} manifest={}".format(
+            ctx.attr.app,
+            ctx.attr.depot or "default",
+            ctx.attr.manifest or "default",
+        ),
     )
+
+    return _layer.implementation(ctx, file_map = {".": dl_dir})
+
+steam_depot_layer = rule(
+    implementation = _steam_depot_layer,
+    attrs = dicts.add(_layer.attrs, {
+        "app": attr.string(
+            mandatory = True,
+        ),
+        "depot": attr.string(),
+        "manifest": attr.string(),
+        "_depotdownloader": attr.label(
+            default = Label("@com_github_steamre_depotdownloader//:depotdownloader.exe"),
+            executable = True,
+            cfg = "exec",
+        ),
+    }),
+    outputs = _layer.outputs,
+    toolchains = _layer.toolchains,
+)

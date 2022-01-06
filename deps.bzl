@@ -1,27 +1,10 @@
-load("@io_bazel_rules_docker//container:container.bzl", "container_pull")
-load("@io_bazel_rules_docker//repositories:deps.bzl", container_deps = "deps")
+load(
+    "@io_bazel_rules_docker//repositories:repositories.bzl",
+    container_repositories = "repositories",
+)
+load("@io_bazel_rules_dotnet//dotnet:deps.bzl", "dotnet_repositories")
 
-def steamcmdbazel_deps():
-    container_deps()
+def steamcmd_deps():
+    dotnet_repositories()
 
-    if not native.existing_rule("steamcmd_installer_base"):
-        container_pull(
-            name = "steamcmd_installer_base",
-            registry = "index.docker.io",
-            repository = "library/ubuntu",
-            tag = "bionic",
-        )
-    if not native.existing_rule("steamcmd_runtime_base"):
-        container_pull(
-            name = "steamcmd_runtime_base",
-            registry = "index.docker.io",
-            repository = "library/ubuntu",
-            tag = "bionic",
-        )
-    if not native.existing_rule("debian"):
-       container_pull(
-           name = "debian",
-           registry = "index.docker.io",
-           repository = "library/debian",
-           tag = "bullseye",
-       )
+    container_repositories()
