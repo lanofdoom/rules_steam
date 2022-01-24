@@ -15,6 +15,8 @@ def _steam_depot_layer(ctx):
         args.add("-depot", ctx.attr.depot)
     if ctx.attr.depot:
         args.add("-manifest", ctx.attr.manifest)
+    if ctx.attr.os:
+        args.add("-os", ctx.attr.os)
     args.add("-dir", dl_dir.path)
     args.add("-verify")
 
@@ -43,6 +45,7 @@ steam_depot_layer = rule(
         ),
         "depot": attr.string(),
         "manifest": attr.string(),
+        "os": attr.string(),
         "_depotdownloader": attr.label(
             default = Label("@com_github_steamre_depotdownloader//:depotdownloader.exe"),
             executable = True,
