@@ -18,8 +18,8 @@ def steamcmd_repos():
     if not native.existing_rule("com_github_steamre_depotdownloader"):
         http_archive(
             name = "com_github_steamre_depotdownloader",
-            urls = ["https://github.com/SteamRE/DepotDownloader/archive/389e7eb788107c7e070dba35ce46c4ebc25bffa1.zip"],
-            sha256 = "75387023876980584bdac9964fca43af1cf51f535e6c39206493246cb2738939",
-            strip_prefix = "DepotDownloader-389e7eb788107c7e070dba35ce46c4ebc25bffa1",
+            urls = ["https://github.com/SteamRE/DepotDownloader/archive/refs/tags/DepotDownloader_2.4.7.zip"],
+            sha256 = "368e6aa045b368138fae19387d9054dcb41547cae2fecde8d8fc60146cb342e9",
+            strip_prefix = "DepotDownloader-DepotDownloader_2.4.7",
             build_file = "@com_github_lanofdoom_steamcmd//downloader:depotdownloader.BUILD",
         )
