@@ -1,8 +1,9 @@
-load("@io_bazel_rules_dotnet//dotnet:defs.bzl", "csharp_binary", "csharp_library")
+load("@io_bazel_rules_dotnet//dotnet:defs.bzl", "csharp_binary")
 
 csharp_binary(
     name = "depotdownloader.exe",
     srcs = [
+        "DepotDownloader/AccountSettingsStore.cs",
         "DepotDownloader/CDNClientPool.cs",
         "DepotDownloader/ContentDownloader.cs",
         "DepotDownloader/DepotConfigStore.cs",
@@ -14,7 +15,6 @@ csharp_binary(
         "DepotDownloader/ProtoManifest.cs",
         "DepotDownloader/Steam3Session.cs",
         "DepotDownloader/Util.cs",
-        "DepotDownloader/AccountSettingsStore.cs",
     ],
     visibility = ["//visibility:public"],
     deps = [
