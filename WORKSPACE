@@ -1,16 +1,24 @@
-workspace(name = "com_github_lanofdoom_bazelsteam")
+workspace(name = "com_github_lanofdoom_steamcmd")
 
-load("@com_github_lanofdoom_bazelsteam//:repositories.bzl", "steamcmd_repos")
+load("@com_github_lanofdoom_steamcmd//:repositories.bzl", "steamcmd_repos")
 
 steamcmd_repos()
 
-load("@com_github_lanofdoom_bazelsteam//:deps.bzl", "steamcmd_deps")
+load("@com_github_lanofdoom_steamcmd//:deps.bzl", "steamcmd_deps")
 
 steamcmd_deps()
 
-load("@com_github_lanofdoom_bazelsteam//:nugets.bzl", "steamcmd_nugets")
+load("@rules_dotnet//dotnet:rules_dotnet_nuget_packages.bzl", "rules_dotnet_nuget_packages")
 
-steamcmd_nugets()
+rules_dotnet_nuget_packages()
+
+load("@rules_dotnet//dotnet:paket2bazel_dependencies.bzl", "paket2bazel_dependencies")
+
+paket2bazel_dependencies()
+
+load("@com_github_lanofdoom_steamcmd//:paket.bzl", "paket")
+
+paket()
 
 #
 # Debian base image to use in examples.

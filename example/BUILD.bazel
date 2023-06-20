@@ -5,7 +5,5 @@ load("@//:defs.bzl", "steam_depot_layer")
 steam_depot_layer(
     name = "counterstrikesource_server",
     app = "232330",
-    depot = "232336",
     directory = "/opt/game",
-    manifest = "2107924716899862244",
 )

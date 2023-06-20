@@ -1,4 +1,4 @@
-load("@io_bazel_rules_dotnet//dotnet:defs.bzl", "csharp_binary")
+load("@rules_dotnet//dotnet:defs.bzl", "csharp_binary")
 
 csharp_binary(
     name = "depotdownloader.exe",
@@ -16,9 +16,15 @@ csharp_binary(
         "DepotDownloader/Steam3Session.cs",
         "DepotDownloader/Util.cs",
     ],
+    private_deps = [
+    ],
+    target_frameworks = ["net6.0"],
     visibility = ["//visibility:public"],
     deps = [
-        "@core_sdk_stdlib//:libraryset",
-        "@steamkit2//:lib",
+        "@paket.main//microsoft.netcore.app.ref",
+        "@paket.main//protobuf-net",
+        "@paket.main//protobuf-net.core",
+        "@paket.main//qrcoder",
+        "@paket.main//steamkit2",
     ],
 )
