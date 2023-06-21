@@ -32,19 +32,4 @@ steamcmd_repos()
 load("@com_github_lanofdoom_steamcmd//:deps.bzl", "steamcmd_deps")
 steamcmd_deps()
 
-load("@com_github_lanofdoom_steamcmd//:nugets.bzl", "steamcmd_nugets")
-steamcmd_nugets()
 ```
-
-# update deps
-
-This is super janky:
-
-1. clone DepotDownloader repo
-1. `dotnet new tool-manifest`
-1. `dotnet tool install paket`
-1. `dotnet tool restore`
-1. `dotnet paket init`
-1. `dotnet paket convert-from-nuget`
-1. (fix steamkit package version capitalization Beta -> beta)
-1. `bazel run @rules_dotnet//tools/paket2bazel:paket2bazel.exe -- --dependencies-file $PWD/../DepotDownloader/paket.dependencies --output-folder $PWD`

@@ -8,25 +8,13 @@ load("@com_github_lanofdoom_steamcmd//:deps.bzl", "steamcmd_deps")
 
 steamcmd_deps()
 
-load("@rules_dotnet//dotnet:rules_dotnet_nuget_packages.bzl", "rules_dotnet_nuget_packages")
-
-rules_dotnet_nuget_packages()
-
-load("@rules_dotnet//dotnet:paket2bazel_dependencies.bzl", "paket2bazel_dependencies")
-
-paket2bazel_dependencies()
-
-load("@com_github_lanofdoom_steamcmd//:paket.bzl", "paket")
-
-paket()
-
-#
-# Debian base image to use in examples.
-#
-
 load("@io_bazel_rules_docker//repositories:deps.bzl", container_deps = "deps")
 
 container_deps()
+
+#
+# Container infrastructure for examples
+#
 
 load("@io_bazel_rules_docker//container:container.bzl", "container_pull")
 

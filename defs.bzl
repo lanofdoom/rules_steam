@@ -1,4 +1,3 @@
-load("@io_bazel_rules_docker//container:container.bzl", "container_layer")
 load(
     "@io_bazel_rules_docker//container:layer.bzl",
     _layer = "layer",
