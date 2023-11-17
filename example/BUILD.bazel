@@ -1,9 +1,0 @@
-load("@//:defs.bzl", "steam_depot_layer")
-
-# Download a Counter-Strike: Source server and it's assets
-
-steam_depot_layer(
-    name = "counterstrikesource_server",
-    app = "232330",
-    directory = "/opt/game",
-)

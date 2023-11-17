@@ -1,0 +1,13 @@
+name: build
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build and test image
+        run: bazelisk build -c opt //...

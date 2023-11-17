@@ -1,35 +1,31 @@
-# Steam App Image Builder
+# `rules_steam`
 
-Tools for building container images containing Steam applications.
+Bazel build rules for downloading software from Steam.
 
-This repository contains Bazel build rules to build container images from Steam applications. The `steam_depot_layer` rule uses [depotdownloader](https://github.com/SteamRE/DepotDownloader) to create container layers with applications downloaded from Steam. [SteamDB](https://steamdb.info/apps/) can be used to find the application data to find the specific `app`, `depot`, and `manifest` ID numbers to use in the build rule. For some games multiple depots may be required (Counter-Strike: Source has separate `server` and `assets` depots).
+These rules are currently only suitable for steam content that can be downloaded without authentication (https://steamdb.info/sub/17906/).
+
+Using `app`, `depot`, and `manifest` ID numbers found on [SteamDB](https://steamdb.info/apps/). Some apps use multiple depots that must be downloaded separately when using the `depot` style dependencies. (Counter-Strike: Source has separate `server` and `assets` depots). Only the `depot` version of this rule is hermetic.
+
+Add this to `MODULE.bazel`:
 
 ```
-load("@com_github_lanofdoom_steamcmd//:defs.bzl", "steam_depot_layer")
-
-steam_depot_layer(
-    name = "counterstrikesource_server",
-    directory = "/opt/game",
-    app = "232330",
-    depot = "232336",
-    manifest = "2107924716899862244",
+bazel_dep(name = "rules_steam", version = "...")
+steam = use_extension("@rules_steam//:download.bzl", "steam")
+steam.app(name = "battlebit_dedicated", app = "689410")
+steam.depot(name = "steamworks_linux", app = "1007", depot = "1006", manifest = "4884950798805348056")
+use_repo(
+    steam,
+    "battlebit_dedicated",
+    "steamworks_linux",
 )
 ```
 
-This rule's dependencies must be loaded in your `WORKSPACE`:
+Now repositories will be available with rules to produce `@battlebit_dedicated//:files` and `@steamworks_linux//:files`.
 
 ```
-http_archive(
-    name = "com_github_lanofdoom_steamcmd",
-    sha256 = "xxxxxx",
-    strip_prefix = "steamcmd-xxxxxx",
-    urls = ["https://github.com/lanofdoom/steamcmd/archive/xxxxxx.tar.gz"],
+pkg_tar(
+    name = "battlebit_dedicated",
+    srcs = ["@battlebit_dedicated//:files"],
+    package_dir = "/opt/battlebit",
 )
-
-load("@com_github_lanofdoom_steamcmd//:repositories.bzl", "steamcmd_repos")
-steamcmd_repos()
-
-load("@com_github_lanofdoom_steamcmd//:deps.bzl", "steamcmd_deps")
-steamcmd_deps()
-
 ```

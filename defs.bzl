@@ -1,10 +1,4 @@
-load(
-    "@io_bazel_rules_docker//container:layer.bzl",
-    _layer = "layer",
-)
-load("@bazel_skylib//lib:dicts.bzl", "dicts")
-
-def _steam_depot_layer(ctx):
+def _steam_download_impl(ctx):
     dl_dir = ctx.actions.declare_directory("{}".format(ctx.label.name))
 
     args = ctx.actions.args()
@@ -27,18 +21,18 @@ def _steam_depot_layer(ctx):
             "no-sandbox": "1",  # TODO: remove
             "no-remote-cache": "1",
         },
-        progress_message = "Downlading Steam App id={} depot={} manifest={}".format(
+        progress_message = "Downlading from Steam id={} depot={} manifest={}".format(
             ctx.attr.app,
             ctx.attr.depot or "default",
             ctx.attr.manifest or "default",
         ),
     )
 
-    return _layer.implementation(ctx, file_map = {".": dl_dir})
+    return [DefaultInfo(files = depset([dl_dir]))]
 
-steam_depot_layer = rule(
-    implementation = _steam_depot_layer,
-    attrs = dicts.add(_layer.attrs, {
+steam_download = rule(
+    implementation = _steam_download_impl,
+    attrs = {
         "app": attr.string(
             mandatory = True,
         ),
@@ -46,11 +40,10 @@ steam_depot_layer = rule(
         "manifest": attr.string(),
         "os": attr.string(),
         "_depotdownloader": attr.label(
-            default = Label("@com_github_steamre_depotdownloader//:depotdownloader.exe"),
+            default = Label("@depotdownloader//:depotdownloader.exe"),
             executable = True,
             cfg = "exec",
+            allow_single_file = True,
         ),
-    }),
-    outputs = _layer.outputs,
-    toolchains = _layer.toolchains,
+    },
 )
