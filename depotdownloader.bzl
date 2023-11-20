@@ -1,12 +1,19 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 def _depotdownloader_repo_impl(ctx):
-    ctx.download_and_extract(
-        url = "https://github.com/SteamRE/DepotDownloader/releases/download/DepotDownloader_2.5.0/DepotDownloader-linux-x64.zip",
-        sha256 = "45fceab12f352943bb618f50abe3e03f48831233f541acf08f8340c8ecbee0f8",
-        rename_files = {"DepotDownloader": "depotdownloader.exe"},
-    )
-    ctx.execute(["chmod", "+x", "depotdownloader.exe"])
+    if ctx.os.name.startswith("windows"):  # TODO: there must be a better way...
+        ctx.download_and_extract(
+            url = "https://github.com/SteamRE/DepotDownloader/releases/download/DepotDownloader_2.5.0/DepotDownloader-windows-x64.zip",
+            sha256 = "",
+            rename_files = {"DepotDownloader.exe": "depotdownloader.exe"},
+        )
+    else:
+        ctx.download_and_extract(
+            url = "https://github.com/SteamRE/DepotDownloader/releases/download/DepotDownloader_2.5.0/DepotDownloader-linux-x64.zip",
+            sha256 = "45fceab12f352943bb618f50abe3e03f48831233f541acf08f8340c8ecbee0f8",
+            rename_files = {"DepotDownloader": "depotdownloader.exe"},
+        )
+        ctx.execute(["chmod", "+x", "depotdownloader.exe"])
 
     # Create a BUILD file containing the cc_library declaration
     ctx.file("BUILD", 'exports_files(["depotdownloader.exe"])')
