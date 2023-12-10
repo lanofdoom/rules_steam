@@ -1,4 +1,5 @@
+# Make DepotDownloader binary available to downstream repos
 alias(
     name = "depotdownloader",
-    actual = "@depotdownloader//:depotdownloader.exe",
+    actual = "@depotdownloader",
 )

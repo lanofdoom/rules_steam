@@ -40,7 +40,7 @@ steam_download = rule(
         "manifest": attr.string(),
         "os": attr.string(),
         "_depotdownloader": attr.label(
-            default = Label("@depotdownloader//:depotdownloader.exe"),
+            default = Label("@depotdownloader"),
             executable = True,
             cfg = "exec",
             allow_single_file = True,

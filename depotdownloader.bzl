@@ -5,18 +5,15 @@ def _depotdownloader_repo_impl(ctx):
         ctx.download_and_extract(
             url = "https://github.com/SteamRE/DepotDownloader/releases/download/DepotDownloader_2.7.3/DepotDownloader-windows-x64.zip",
             sha256 = "",
-            rename_files = {"DepotDownloader.exe": "depotdownloader.exe"},
         )
+        ctx.file("BUILD", 'alias(name="depotdownloader", actual="DepotDownloader.exe", visibility = ["//visibility:public"])')
     else:
         ctx.download_and_extract(
             url = "https://github.com/SteamRE/DepotDownloader/releases/download/DepotDownloader_2.7.3/DepotDownloader-linux-x64.zip",
             sha256 = "",
-            rename_files = {"DepotDownloader": "depotdownloader.exe"},
         )
         ctx.execute(["chmod", "+x", "depotdownloader.exe"])
-
-    # Create a BUILD file containing the cc_library declaration
-    ctx.file("BUILD", 'exports_files(["depotdownloader.exe"])')
+        ctx.file("BUILD", 'alias(name="depotdownloader", actual="DepotDownloader", visibility = ["//visibility:public"])')
 
     # Create an empty WORKSPACE file.
     ctx.file("WORKSPACE", "")
