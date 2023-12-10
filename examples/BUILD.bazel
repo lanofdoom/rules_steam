@@ -1,5 +1,13 @@
 load("@rules_pkg//:pkg.bzl", "pkg_tar")
 
+filegroup(
+    name = "examples",
+    srcs = [
+        ":battlebit_dedicated",
+        ":steamworks_linux",
+    ],
+)
+
 # These examples aren't very interesting as all the fun happens over in your `MODULE.bazel`.
 
 pkg_tar(
