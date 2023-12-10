@@ -1,31 +1,39 @@
-# TODO(kleinpa): refactor to download files when loading repository.
+def _steam_download_impl(ctx):
+    dl_dir = ctx.actions.declare_directory("{}".format(ctx.label.name))
 
-_STEAM_BUILD = """
-load("@rules_steam//:defs.bzl", "steam_download")
-load("@rules_pkg//:pkg.bzl", "pkg_tar")
-load("@rules_pkg//:mappings.bzl", "pkg_filegroup", "pkg_files")
+    args = ctx.actions.args()
+    if ctx.attr.app:
+        args.add("-app", ctx.attr.app)
+    if ctx.attr.depot:
+        args.add("-depot", ctx.attr.depot)
+    if ctx.attr.depot:
+        args.add("-manifest", ctx.attr.manifest)
+    args.add("-dir", dl_dir.path)
+    args.add("-verify")
 
-steam_download(
-    name = "pkg",
-    app = "{app}",
-    depot = "{depot}",
-    manifest = "{manifest}",
-)
+    args.add("-os", ctx.attr.os)
 
-pkg_files(
-    name = "files",
-    srcs = [":pkg"],
-    strip_prefix = "pkg",
-    visibility = ["//visibility:public"]
-)
-"""
+    info = ctx.toolchains["@rules_steam//:toolchain_type"].depotdownloaderinfo
+    ctx.actions.run(
+        outputs = [dl_dir],
+        arguments = [args],
+        executable = info.depotdownloader,
+        execution_requirements = {
+            "no-sandbox": "1",  # TODO: remove
+            "no-remote-cache": "1",
+        },
+        progress_message = "Downlading from Steam id={} depot={} manifest={} os={}".format(
+            ctx.attr.app,
+            ctx.attr.depot or "default",
+            ctx.attr.manifest or "default",
+            ctx.attr.os or "default",
+        ),
+    )
 
-def _steam_repo_impl(ctx):
-    ctx.file("WORKSPACE", "workspace(name = \"{name}\")".format(name = ctx.name))
-    ctx.file("BUILD.bazel", _STEAM_BUILD.format(name = ctx.attr.name, app = ctx.attr.app, depot = ctx.attr.depot, manifest = ctx.attr.manifest))
+    return [DefaultInfo(files = depset([dl_dir]))]
 
-steam_repo = repository_rule(
-    implementation = _steam_repo_impl,
+steam_download = rule(
+    implementation = _steam_download_impl,
     attrs = {
         "app": attr.string(
             mandatory = True,
@@ -34,27 +42,5 @@ steam_repo = repository_rule(
         "manifest": attr.string(),
         "os": attr.string(),
     },
-)
-
-_app = tag_class(attrs = {"name": attr.string(), "app": attr.string()})
-_depot = tag_class(attrs = {"name": attr.string(), "app": attr.string(), "depot": attr.string(), "manifest": attr.string()})
-
-def _steam_module_impl(module_ctx):
-    for mod in module_ctx.modules:
-        for app in mod.tags.app:
-            steam_repo(
-                name = app.name,
-                app = app.app,
-            )
-        for depot in mod.tags.depot:
-            steam_repo(
-                name = depot.name,
-                app = depot.app,
-                depot = depot.depot,
-                manifest = depot.manifest,
-            )
-
-steam = module_extension(
-    implementation = _steam_module_impl,
-    tag_classes = {"app": _app, "depot": _depot},
+    toolchains = ["@rules_steam//:toolchain_type"],
 )

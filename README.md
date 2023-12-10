@@ -6,19 +6,18 @@ Currently only content available without authentication is available, this inclu
 
 Use `app`, `depot`, and `manifest` ID numbers found on [SteamDB](https://steamdb.info/apps/) to populate entries in `MODULE.bazel`. Some applications use multiple depots that must be downloaded separately when using the `depot` style dependencies. `app()` rules target all depots associated with the current version of the application while `depot()` rules may specify an exact version.
 
-Add this to `MODULE.bazel`:
+## Usage
 
 ```Starlark
-bazel_dep(name = "rules_steam", version = "...")
+steam = use_extension("@rules_steam//:extension.bzl", "steam", dev_dependency = True)
 
-steam = use_extension("@rules_steam//:steam.bzl", "steam")
-steam.app(name = "battlebit_dedicated", app = "689410")
-steam.depot(name = "steamworks_linux", app = "1007", depot = "1006", manifest = "4884950798805348056")
-use_repo(
-    steam,
-    "battlebit_dedicated",
-    "steamworks_linux",
-)
+# Fetches a specific version of a steam depot. Most applications are composed of multiple depots.
+steam.depot(name = "battlebit_dedicated", app = "689410", depot = "1611741", manifest = "6391981145455211793")
+
+# Download all depos associated with the latest version of an application. This rule is not hermetic.
+steam.app(name = "steamworks", app = "1007")
+
+use_repo(steam, "battlebit_dedicated", "steamworks")
 ```
 
 Now repositories will be available with rules to produce `@battlebit_dedicated//:files` and `@steamworks_linux//:files`.

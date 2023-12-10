@@ -2,18 +2,17 @@ module(name = "rules_steam")
 
 bazel_dep(name = "bazel_skylib", version = "1.5.0")
 bazel_dep(name = "rules_pkg", version = "0.9.1")
+bazel_dep(name = "platforms", version = "0.0.8")
 
 repos = use_extension("@rules_steam//:depotdownloader.bzl", "depotdownloader")
-use_repo(
-    repos,
-    "depotdownloader",
+use_repo(repos, "depotdownloader_linux", "depotdownloader_windows")
+
+register_toolchains(
+    "@rules_steam//:depotdownloader_linux_toolchain",
+    "@rules_steam//:depotdownloader_windows_toolchain",
 )
 
-steam = use_extension("@rules_steam//:steam.bzl", "steam", dev_dependency = True)
-steam.app(name = "battlebit_dedicated", app = "689410")
-steam.depot(name = "steamworks_linux", app = "1007", depot = "1006", manifest = "4884950798805348056")
-use_repo(
-    steam,
-    "battlebit_dedicated",
-    "steamworks_linux",
-)
+steam = use_extension("@rules_steam//:extension.bzl", "steam", dev_dependency = True)
+steam.depot(name = "battlebit_dedicated", app = "689410", depot = "1611741", manifest = "6391981145455211793")
+steam.app(name = "steamworks", app = "1007")
+use_repo(steam, "battlebit_dedicated", "steamworks")

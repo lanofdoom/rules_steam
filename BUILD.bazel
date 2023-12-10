@@ -1,0 +1,39 @@
+load(":toolchain.bzl", "depotdownloader_toolchain")
+
+package(default_visibility = ["//visibility:public"])
+
+platform(
+    name = "windows",
+    constraint_values = ["@platforms//os:windows"],
+)
+
+platform(
+    name = "linux",
+    constraint_values = ["@platforms//os:linux"],
+)
+
+toolchain_type(name = "toolchain_type")
+
+depotdownloader_toolchain(
+    name = "depotdownloader_windows",
+    depotdownloader = "@depotdownloader_windows//:DepotDownloader.exe",
+)
+
+toolchain(
+    name = "depotdownloader_windows_toolchain",
+    exec_compatible_with = ["@platforms//os:windows"],
+    toolchain = ":depotdownloader_windows",
+    toolchain_type = "@rules_steam//:toolchain_type",
+)
+
+depotdownloader_toolchain(
+    name = "depotdownloader_linux",
+    depotdownloader = "@depotdownloader_linux//:DepotDownloader",
+)
+
+toolchain(
+    name = "depotdownloader_linux_toolchain",
+    exec_compatible_with = ["@platforms//os:linux"],
+    toolchain = ":depotdownloader_linux",
+    toolchain_type = "@rules_steam//:toolchain_type",
+)
