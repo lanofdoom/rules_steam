@@ -10,7 +10,7 @@ use_repo(
 )
 
 steam = use_extension("@rules_steam//:steam.bzl", "steam", dev_dependency = True)
-steam.app(name = "battlebit_dedicated", app = "689410")
+steam.app(name = "battlebit_dedicated", app = "689410", os = "windows")
 steam.depot(name = "steamworks_linux", app = "1007", depot = "1006", manifest = "4884950798805348056")
 use_repo(
     steam,

@@ -10,6 +10,7 @@ steam_download(
     app = "{app}",
     depot = "{depot}",
     manifest = "{manifest}",
+    os = "{os}",
 )
 
 pkg_files(
@@ -22,7 +23,7 @@ pkg_files(
 
 def _steam_repo_impl(ctx):
     ctx.file("WORKSPACE", "workspace(name = \"{name}\")".format(name = ctx.name))
-    ctx.file("BUILD.bazel", _STEAM_BUILD.format(name = ctx.attr.name, app = ctx.attr.app, depot = ctx.attr.depot, manifest = ctx.attr.manifest))
+    ctx.file("BUILD.bazel", _STEAM_BUILD.format(name = ctx.attr.name, app = ctx.attr.app, depot = ctx.attr.depot, manifest = ctx.attr.manifest, os = ctx.attr.os))
 
 steam_repo = repository_rule(
     implementation = _steam_repo_impl,
@@ -36,7 +37,7 @@ steam_repo = repository_rule(
     },
 )
 
-_app = tag_class(attrs = {"name": attr.string(), "app": attr.string()})
+_app = tag_class(attrs = {"name": attr.string(), "app": attr.string(), "os": attr.string()})
 _depot = tag_class(attrs = {"name": attr.string(), "app": attr.string(), "depot": attr.string(), "manifest": attr.string()})
 
 def _steam_module_impl(module_ctx):
@@ -45,6 +46,7 @@ def _steam_module_impl(module_ctx):
             steam_repo(
                 name = app.name,
                 app = app.app,
+                os = app.os,
             )
         for depot in mod.tags.depot:
             steam_repo(

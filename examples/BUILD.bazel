@@ -1,3 +1,4 @@
+load("@bazel_skylib//rules:build_test.bzl", "build_test")
 load("@rules_pkg//:pkg.bzl", "pkg_tar")
 
 # These examples aren't very interesting as all the fun happens over in your `MODULE.bazel`.
@@ -11,4 +12,12 @@ pkg_tar(
     name = "battlebit_dedicated",
     srcs = ["@battlebit_dedicated//:files"],
     package_dir = "/opt/battlebit",
+)
+
+build_test(
+    name = "examples",
+    targets = [
+        ":battlebit_dedicated",
+        ":steamworks_linux",
+    ],
 )
