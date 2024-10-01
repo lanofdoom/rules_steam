@@ -3,14 +3,14 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 def _depotdownloader_repo_impl(ctx):
     if ctx.os.name.startswith("windows"):  # TODO: there must be a better way...
         ctx.download_and_extract(
-            url = "https://github.com/SteamRE/DepotDownloader/releases/download/DepotDownloader_2.5.0/DepotDownloader-windows-x64.zip",
-            sha256 = "",
+            url = "https://github.com/SteamRE/DepotDownloader/releases/download/DepotDownloader_2.7.1/DepotDownloader-windows-x64.zip",
+            sha256 = "7b078907b78f9b289899fd1b08d46d70dff374d64b453d5692a82ea51015eb46",
             rename_files = {"DepotDownloader.exe": "depotdownloader.exe"},
         )
     else:
         ctx.download_and_extract(
-            url = "https://github.com/SteamRE/DepotDownloader/releases/download/DepotDownloader_2.5.0/DepotDownloader-linux-x64.zip",
-            sha256 = "45fceab12f352943bb618f50abe3e03f48831233f541acf08f8340c8ecbee0f8",
+            url = "https://github.com/SteamRE/DepotDownloader/releases/download/DepotDownloader_2.7.1/DepotDownloader-linux-x64.zip",
+            sha256 = "6b19fe7b18c98b9ffe5ec5f6c5a1c3721d2f8515fdf64e67ba5905244edc1f2e",
             rename_files = {"DepotDownloader": "depotdownloader.exe"},
         )
         ctx.execute(["chmod", "+x", "depotdownloader.exe"])

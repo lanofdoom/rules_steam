@@ -1,6 +1,6 @@
 {
   "lockFileVersion": 3,
-  "moduleFileHash": "e2a15a315bfa0fd498d88c292389dadfef97a9c009bedd17364c1b5dd295bcb9",
+  "moduleFileHash": "c30f926f4bbe416ee91a8d31aca353e351eaa006254ccf817b8a324584797c74",
   "flags": {
     "cmdRegistries": [
       "https://bcr.bazel.build/"
@@ -726,7 +726,7 @@
   "moduleExtensions": {
     "//:depotdownloader.bzl%depotdownloader": {
       "general": {
-        "bzlTransitiveDigest": "i5YUBX25EVBXDs0AW6lnlzECIN2iIkPPzVDjvvLey30=",
+        "bzlTransitiveDigest": "jEZQloPmZ3iuDWgaZkwpT98JFm2XefIyZEqA/llEveg=",
         "accumulatedFileDigests": {},
         "envVariables": {},
         "generatedRepoSpecs": {

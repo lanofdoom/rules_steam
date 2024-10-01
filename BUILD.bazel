@@ -1,0 +1,4 @@
+alias(
+    name = "depotdownloader",
+    actual = "@depotdownloader//:depotdownloader.exe",
+)
