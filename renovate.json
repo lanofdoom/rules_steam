@@ -1,0 +1,30 @@
+{
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "extends": [
+        "config:recommended"
+    ],
+    "automerge": true,
+    "automergeType": "branch",
+    "branchConcurrentLimit": 0,
+    "dependencyDashboard": true,
+    "customManagers": [
+        {
+            "customType": "regex",
+            "fileMatch": [
+                "depotdownloader.bzl"
+            ],
+            "matchStrings": [
+                "https:\/\/github\\.com\/(?<depName>.*)\/releases\/download\/(?<currentValue>.*)\/.*\\.zip"
+            ],
+            "datasourceTemplate": "github-releases"
+        }
+    ],
+    "packageRules": [
+        {
+            "matchPackageNames": [
+                "SteamRE/DepotDownloader"
+            ],
+            "versioning": "regex:^DepotDownloader_v?(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$"
+        }
+    ]
+}
