@@ -1,8 +1,8 @@
 name: update depotdownloader
 on:
-  # schedule:
-  #   # Run daily at 00:00 UTC
-  #   - cron: '0 0 * * *'
+  schedule:
+    # Run daily at 00:00 UTC
+    - cron: '0 0 * * *'
   workflow_dispatch:
 jobs:
   update-release:
@@ -14,6 +14,7 @@ jobs:
           python-version: '3.x'
       - run: pip install -r update/requirements.txt
       - run: python update/update.py > depotdownloader_version.bzl
+      - run: bazelisk mod deps
       - uses: peter-evans/create-pull-request@v5
         with:
           branch: update-release-branch
