@@ -726,7 +726,7 @@
   "moduleExtensions": {
     "//:depotdownloader.bzl%depotdownloader": {
       "general": {
-        "bzlTransitiveDigest": "jEZQloPmZ3iuDWgaZkwpT98JFm2XefIyZEqA/llEveg=",
+        "bzlTransitiveDigest": "6kuPF7ihCI8HlekiGZT9m8+6AmLECL+9drAclmZ468w=",
         "accumulatedFileDigests": {},
         "envVariables": {},
         "generatedRepoSpecs": {
@@ -743,7 +743,7 @@
     },
     "//:steam.bzl%steam": {
       "general": {
-        "bzlTransitiveDigest": "7usJKStbv19YxC/Zwo+1LnxQWVFDSOtk8iJglZbDels=",
+        "bzlTransitiveDigest": "pNhZICjb35miwPhEG0qq7V+73qjkmK1s0O3yq9m3XGY=",
         "accumulatedFileDigests": {},
         "envVariables": {},
         "generatedRepoSpecs": {
@@ -792,6 +792,33 @@
         }
       }
     },
+    "@@bazel_tools//tools/android:android_extensions.bzl%remote_android_tools_extensions": {
+      "general": {
+        "bzlTransitiveDigest": "iz3RFYDcsjupaT10sdSPAhA44WL3eDYkTEnYThllj1w=",
+        "accumulatedFileDigests": {},
+        "envVariables": {},
+        "generatedRepoSpecs": {
+          "android_tools": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_archive",
+            "attributes": {
+              "name": "bazel_tools~remote_android_tools_extensions~android_tools",
+              "sha256": "2b661a761a735b41c41b3a78089f4fc1982626c76ddb944604ae3ff8c545d3c2",
+              "url": "https://mirror.bazel.build/bazel_android_tools/android_tools_pkg-0.30.0.tar"
+            }
+          },
+          "android_gmaven_r8": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_jar",
+            "attributes": {
+              "name": "bazel_tools~remote_android_tools_extensions~android_gmaven_r8",
+              "sha256": "57a696749695a09381a87bc2f08c3a8ed06a717a5caa3ef878a3077e0d3af19d",
+              "url": "https://maven.google.com/com/android/tools/r8/8.1.56/r8-8.1.56.jar"
+            }
+          }
+        }
+      }
+    },
     "@@bazel_tools//tools/cpp:cc_configure.bzl%cc_configure_extension": {
       "general": {
         "bzlTransitiveDigest": "O9sf6ilKWU9Veed02jG9o2HM/xgV/UAyciuFBuxrFRY=",
@@ -815,6 +842,24 @@
         }
       }
     },
+    "@@bazel_tools//tools/osx:xcode_configure.bzl%xcode_configure_extension": {
+      "general": {
+        "bzlTransitiveDigest": "Qh2bWTU6QW6wkrd87qrU4YeY+SG37Nvw3A0PR4Y0L2Y=",
+        "accumulatedFileDigests": {},
+        "envVariables": {},
+        "generatedRepoSpecs": {
+          "local_config_xcode": {
+            "bzlFile": "@@bazel_tools//tools/osx:xcode_configure.bzl",
+            "ruleClassName": "xcode_autoconf",
+            "attributes": {
+              "name": "bazel_tools~xcode_configure_extension~local_config_xcode",
+              "xcode_locator": "@bazel_tools//tools/osx:xcode_locator.m",
+              "remote_xcode": ""
+            }
+          }
+        }
+      }
+    },
     "@@bazel_tools//tools/sh:sh_configure.bzl%sh_configure_extension": {
       "general": {
         "bzlTransitiveDigest": "hp4NgmNjEg5+xgvzfh6L83bt9/aiiWETuNpwNuF1MSU=",
@@ -826,6 +871,26 @@
             "ruleClassName": "sh_config",
             "attributes": {
               "name": "bazel_tools~sh_configure_extension~local_config_sh"
+            }
+          }
+        }
+      }
+    },
+    "@@bazel_tools//tools/test:extensions.bzl%remote_coverage_tools_extension": {
+      "general": {
+        "bzlTransitiveDigest": "cizrA62cv8WUgb0cCmx5B6PRijtr/I4TAWxg/4caNGU=",
+        "accumulatedFileDigests": {},
+        "envVariables": {},
+        "generatedRepoSpecs": {
+          "remote_coverage_tools": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_archive",
+            "attributes": {
+              "name": "bazel_tools~remote_coverage_tools_extension~remote_coverage_tools",
+              "sha256": "7006375f6756819b7013ca875eab70a541cf7d89142d9c511ed78ea4fefa38af",
+              "urls": [
+                "https://mirror.bazel.build/bazel_coverage_output_generator/releases/coverage_output_generator-v2.6.zip"
+              ]
             }
           }
         }
@@ -1366,6 +1431,114 @@
             "attributes": {
               "name": "rules_java~7.1.0~toolchains~remotejdk21_win_toolchain_config_repo",
               "build_file": "\nconfig_setting(\n    name = \"prefix_version_setting\",\n    values = {\"java_runtime_version\": \"remotejdk_21\"},\n    visibility = [\"//visibility:private\"],\n)\nconfig_setting(\n    name = \"version_setting\",\n    values = {\"java_runtime_version\": \"21\"},\n    visibility = [\"//visibility:private\"],\n)\nalias(\n    name = \"version_or_prefix_version_setting\",\n    actual = select({\n        \":version_setting\": \":version_setting\",\n        \"//conditions:default\": \":prefix_version_setting\",\n    }),\n    visibility = [\"//visibility:private\"],\n)\ntoolchain(\n    name = \"toolchain\",\n    target_compatible_with = [\"@platforms//os:windows\", \"@platforms//cpu:x86_64\"],\n    target_settings = [\":version_or_prefix_version_setting\"],\n    toolchain_type = \"@bazel_tools//tools/jdk:runtime_toolchain_type\",\n    toolchain = \"@remotejdk21_win//:jdk\",\n)\ntoolchain(\n    name = \"bootstrap_runtime_toolchain\",\n    # These constraints are not required for correctness, but prevent fetches of remote JDK for\n    # different architectures. As every Java compilation toolchain depends on a bootstrap runtime in\n    # the same configuration, this constraint will not result in toolchain resolution failures.\n    exec_compatible_with = [\"@platforms//os:windows\", \"@platforms//cpu:x86_64\"],\n    target_settings = [\":version_or_prefix_version_setting\"],\n    toolchain_type = \"@bazel_tools//tools/jdk:bootstrap_runtime_toolchain_type\",\n    toolchain = \"@remotejdk21_win//:jdk\",\n)\n"
+            }
+          }
+        }
+      }
+    },
+    "@@rules_python~0.10.2//python:extensions.bzl%pip_install": {
+      "general": {
+        "bzlTransitiveDigest": "CBgAHij2PzinIkeOkoRJcllj6whJIQ5eOHaHNfKikpU=",
+        "accumulatedFileDigests": {},
+        "envVariables": {},
+        "generatedRepoSpecs": {
+          "pypi__colorama": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_archive",
+            "attributes": {
+              "name": "rules_python~0.10.2~pip_install~pypi__colorama",
+              "url": "https://files.pythonhosted.org/packages/44/98/5b86278fbbf250d239ae0ecb724f8572af1c91f4a11edf4d36a206189440/colorama-0.4.4-py2.py3-none-any.whl",
+              "sha256": "9f47eda37229f68eee03b24b9748937c7dc3868f906e8ba69fbcbdd3bc5dc3e2",
+              "type": "zip",
+              "build_file_content": "package(default_visibility = [\"//visibility:public\"])\n\nload(\"@rules_python//python:defs.bzl\", \"py_library\")\n\npy_library(\n    name = \"lib\",\n    srcs = glob([\"**/*.py\"]),\n    data = glob([\"**/*\"], exclude=[\"**/*.py\", \"**/* *\", \"BUILD\", \"WORKSPACE\"]),\n    # This makes this directory a top-level in the python import\n    # search path for anything that depends on this.\n    imports = [\".\"],\n)\n"
+            }
+          },
+          "pypi__wheel": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_archive",
+            "attributes": {
+              "name": "rules_python~0.10.2~pip_install~pypi__wheel",
+              "url": "https://files.pythonhosted.org/packages/27/d6/003e593296a85fd6ed616ed962795b2f87709c3eee2bca4f6d0fe55c6d00/wheel-0.37.1-py2.py3-none-any.whl",
+              "sha256": "4bdcd7d840138086126cd09254dc6195fb4fc6f01c050a1d7236f2630db1d22a",
+              "type": "zip",
+              "build_file_content": "package(default_visibility = [\"//visibility:public\"])\n\nload(\"@rules_python//python:defs.bzl\", \"py_library\")\n\npy_library(\n    name = \"lib\",\n    srcs = glob([\"**/*.py\"]),\n    data = glob([\"**/*\"], exclude=[\"**/*.py\", \"**/* *\", \"BUILD\", \"WORKSPACE\"]),\n    # This makes this directory a top-level in the python import\n    # search path for anything that depends on this.\n    imports = [\".\"],\n)\n"
+            }
+          },
+          "pypi__click": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_archive",
+            "attributes": {
+              "name": "rules_python~0.10.2~pip_install~pypi__click",
+              "url": "https://files.pythonhosted.org/packages/76/0a/b6c5f311e32aeb3b406e03c079ade51e905ea630fc19d1262a46249c1c86/click-8.0.1-py3-none-any.whl",
+              "sha256": "fba402a4a47334742d782209a7c79bc448911afe1149d07bdabdf480b3e2f4b6",
+              "type": "zip",
+              "build_file_content": "package(default_visibility = [\"//visibility:public\"])\n\nload(\"@rules_python//python:defs.bzl\", \"py_library\")\n\npy_library(\n    name = \"lib\",\n    srcs = glob([\"**/*.py\"]),\n    data = glob([\"**/*\"], exclude=[\"**/*.py\", \"**/* *\", \"BUILD\", \"WORKSPACE\"]),\n    # This makes this directory a top-level in the python import\n    # search path for anything that depends on this.\n    imports = [\".\"],\n)\n"
+            }
+          },
+          "pypi__pep517": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_archive",
+            "attributes": {
+              "name": "rules_python~0.10.2~pip_install~pypi__pep517",
+              "url": "https://files.pythonhosted.org/packages/f4/67/846c08e18fefb265a66e6fd5a34269d649b779718d9bf59622085dabd370/pep517-0.12.0-py2.py3-none-any.whl",
+              "sha256": "dd884c326898e2c6e11f9e0b64940606a93eb10ea022a2e067959f3a110cf161",
+              "type": "zip",
+              "build_file_content": "package(default_visibility = [\"//visibility:public\"])\n\nload(\"@rules_python//python:defs.bzl\", \"py_library\")\n\npy_library(\n    name = \"lib\",\n    srcs = glob([\"**/*.py\"]),\n    data = glob([\"**/*\"], exclude=[\"**/*.py\", \"**/* *\", \"BUILD\", \"WORKSPACE\"]),\n    # This makes this directory a top-level in the python import\n    # search path for anything that depends on this.\n    imports = [\".\"],\n)\n"
+            }
+          },
+          "pypi__pip": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_archive",
+            "attributes": {
+              "name": "rules_python~0.10.2~pip_install~pypi__pip",
+              "url": "https://files.pythonhosted.org/packages/96/2f/caec18213f6a67852f6997fb0673ae08d2e93d1b81573edb93ba4ef06970/pip-22.1.2-py3-none-any.whl",
+              "sha256": "a3edacb89022ef5258bf61852728bf866632a394da837ca49eb4303635835f17",
+              "type": "zip",
+              "build_file_content": "package(default_visibility = [\"//visibility:public\"])\n\nload(\"@rules_python//python:defs.bzl\", \"py_library\")\n\npy_library(\n    name = \"lib\",\n    srcs = glob([\"**/*.py\"]),\n    data = glob([\"**/*\"], exclude=[\"**/*.py\", \"**/* *\", \"BUILD\", \"WORKSPACE\"]),\n    # This makes this directory a top-level in the python import\n    # search path for anything that depends on this.\n    imports = [\".\"],\n)\n"
+            }
+          },
+          "pypi__installer": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_archive",
+            "attributes": {
+              "name": "rules_python~0.10.2~pip_install~pypi__installer",
+              "url": "https://files.pythonhosted.org/packages/1b/21/3e6ebd12d8dccc55bcb7338db462c75ac86dbd0ac7439ac114616b21667b/installer-0.5.1-py3-none-any.whl",
+              "sha256": "1d6c8d916ed82771945b9c813699e6f57424ded970c9d8bf16bbc23e1e826ed3",
+              "type": "zip",
+              "build_file_content": "package(default_visibility = [\"//visibility:public\"])\n\nload(\"@rules_python//python:defs.bzl\", \"py_library\")\n\npy_library(\n    name = \"lib\",\n    srcs = glob([\"**/*.py\"]),\n    data = glob([\"**/*\"], exclude=[\"**/*.py\", \"**/* *\", \"BUILD\", \"WORKSPACE\"]),\n    # This makes this directory a top-level in the python import\n    # search path for anything that depends on this.\n    imports = [\".\"],\n)\n"
+            }
+          },
+          "pypi__pip_tools": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_archive",
+            "attributes": {
+              "name": "rules_python~0.10.2~pip_install~pypi__pip_tools",
+              "url": "https://files.pythonhosted.org/packages/fe/5c/8995799b0ccf832906b4968b4eb2045beb9b3de79e96e6b1a6e4fc4e6974/pip_tools-6.6.2-py3-none-any.whl",
+              "sha256": "6b486548e5a139e30e4c4a225b3b7c2d46942a9f6d1a91143c21b1de4d02fd9b",
+              "type": "zip",
+              "build_file_content": "package(default_visibility = [\"//visibility:public\"])\n\nload(\"@rules_python//python:defs.bzl\", \"py_library\")\n\npy_library(\n    name = \"lib\",\n    srcs = glob([\"**/*.py\"]),\n    data = glob([\"**/*\"], exclude=[\"**/*.py\", \"**/* *\", \"BUILD\", \"WORKSPACE\"]),\n    # This makes this directory a top-level in the python import\n    # search path for anything that depends on this.\n    imports = [\".\"],\n)\n"
+            }
+          },
+          "pypi__setuptools": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_archive",
+            "attributes": {
+              "name": "rules_python~0.10.2~pip_install~pypi__setuptools",
+              "url": "https://files.pythonhosted.org/packages/7c/5b/3d92b9f0f7ca1645cba48c080b54fe7d8b1033a4e5720091d1631c4266db/setuptools-60.10.0-py3-none-any.whl",
+              "sha256": "782ef48d58982ddb49920c11a0c5c9c0b02e7d7d1c2ad0aa44e1a1e133051c96",
+              "type": "zip",
+              "build_file_content": "package(default_visibility = [\"//visibility:public\"])\n\nload(\"@rules_python//python:defs.bzl\", \"py_library\")\n\npy_library(\n    name = \"lib\",\n    srcs = glob([\"**/*.py\"]),\n    data = glob([\"**/*\"], exclude=[\"**/*.py\", \"**/* *\", \"BUILD\", \"WORKSPACE\"]),\n    # This makes this directory a top-level in the python import\n    # search path for anything that depends on this.\n    imports = [\".\"],\n)\n"
+            }
+          },
+          "pypi__tomli": {
+            "bzlFile": "@@bazel_tools//tools/build_defs/repo:http.bzl",
+            "ruleClassName": "http_archive",
+            "attributes": {
+              "name": "rules_python~0.10.2~pip_install~pypi__tomli",
+              "url": "https://files.pythonhosted.org/packages/97/75/10a9ebee3fd790d20926a90a2547f0bf78f371b2f13aa822c759680ca7b9/tomli-2.0.1-py3-none-any.whl",
+              "sha256": "939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc",
+              "type": "zip",
+              "build_file_content": "package(default_visibility = [\"//visibility:public\"])\n\nload(\"@rules_python//python:defs.bzl\", \"py_library\")\n\npy_library(\n    name = \"lib\",\n    srcs = glob([\"**/*.py\"]),\n    data = glob([\"**/*\"], exclude=[\"**/*.py\", \"**/* *\", \"BUILD\", \"WORKSPACE\"]),\n    # This makes this directory a top-level in the python import\n    # search path for anything that depends on this.\n    imports = [\".\"],\n)\n"
             }
           }
         }
