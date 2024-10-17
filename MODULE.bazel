@@ -1,7 +1,7 @@
 module(name = "rules_steam")
 
 bazel_dep(name = "bazel_skylib", version = "1.7.1")
-bazel_dep(name = "rules_pkg", version = "0.10.1")
+bazel_dep(name = "rules_pkg", version = "1.0.1")
 
 repos = use_extension("@rules_steam//:depotdownloader.bzl", "depotdownloader")
 use_repo(
