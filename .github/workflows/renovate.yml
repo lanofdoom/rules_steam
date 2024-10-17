@@ -1,7 +1,7 @@
 name: renovate
 on:
   schedule:
-    - cron: "0 5 * * *" # Runs at 5 AM UTC daily
+    - cron: "0 * * * *"
   workflow_dispatch:
 jobs:
   renovate:
@@ -19,3 +19,4 @@ jobs:
           token: "${{ steps.app-token.outputs.token }}"
         env:
           RENOVATE_REPOSITORIES: ${{ github.repository }}
+          LOG_LEVEL: 'debug'
