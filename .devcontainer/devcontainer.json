@@ -1,13 +1,22 @@
 {
-	"features": {
-		"ghcr.io/balazs23/devcontainers-features/bazel:1": {},
-		"ghcr.io/devcontainers/features/go:1": {}
-	},
-	"customizations": {
-		"vscode": {
-			"extensions": [
-				"BazelBuild.vscode-bazel"
-			]
-		}
-	}
+  "image": "mcr.microsoft.com/devcontainers/base:bookworm",
+  "features": {
+    "ghcr.io/devcontainers-community/npm-features/prettier:1": {},
+    "ghcr.io/devcontainers-community/features/bazel:1": {
+      "bazelisk_version": "latest",
+      "buildifier_version": "latest"
+    },
+    "ghcr.io/devcontainers/features/dotnet": {
+      "additionalVersions": "9.0.100"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "BazelBuild.vscode-bazel",
+        "esbenp.prettier-vscode",
+        "ms-dotnettools.csdevkit"
+      ]
+    }
+  }
 }
