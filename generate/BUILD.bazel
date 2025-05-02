@@ -1,0 +1,45 @@
+load("@bazel_skylib//rules:build_test.bzl", "build_test")
+load("@rules_dotnet//dotnet:defs.bzl", "csharp_binary", "csharp_library")
+
+csharp_binary(
+    name = "generate",
+    srcs = ["Main.cs"],
+    target_frameworks = ["net9.0"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":generate_lib",
+        "@paket.main//microsoft.extensions.configuration",
+        "@paket.main//microsoft.extensions.configuration.abstractions",
+        "@paket.main//microsoft.extensions.logging",
+        "@paket.main//microsoft.extensions.logging.abstractions",
+        "@paket.main//microsoft.extensions.logging.console",
+        "@paket.main//scriban",
+        "@paket.main//steamkit2",
+        "@paket.main//system.commandline",
+    ],
+)
+
+csharp_library(
+    name = "generate_lib",
+    srcs = [
+        "ContentDownloader.cs",
+        "Steam3Session.cs",
+        "Util.cs",
+    ],
+    target_frameworks = ["net9.0"],
+    deps = [
+        "@paket.main//microsoft.extensions.configuration",
+        "@paket.main//microsoft.extensions.configuration.abstractions",
+        "@paket.main//microsoft.extensions.logging",
+        "@paket.main//microsoft.extensions.logging.abstractions",
+        "@paket.main//microsoft.extensions.logging.console",
+        "@paket.main//steamkit2",
+    ],
+)
+
+build_test(
+    name = "build_test",
+    targets = [
+        ":generate",
+    ],
+)

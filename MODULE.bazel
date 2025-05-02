@@ -2,18 +2,18 @@ module(name = "rules_steam")
 
 bazel_dep(name = "bazel_skylib", version = "1.8.2")
 bazel_dep(name = "rules_pkg", version = "1.1.0")
+bazel_dep(name = "rules_dotnet", version = "0.17.5")
 
-repos = use_extension("@rules_steam//:depotdownloader.bzl", "depotdownloader")
-use_repo(
-    repos,
-    "depotdownloader",
-)
+dotnet = use_extension("@rules_dotnet//dotnet:extensions.bzl", "dotnet")
+dotnet.toolchain(dotnet_version = "9.0.100")
 
-steam = use_extension("@rules_steam//:steam.bzl", "steam", dev_dependency = True)
-steam.app(name = "battlebit_dedicated", app = "689410", os = "windows")
-steam.depot(name = "steamworks_linux", app = "1007", depot = "1006", manifest = "4884950798805348056")
-use_repo(
-    steam,
-    "battlebit_dedicated",
-    "steamworks_linux",
-)
+use_repo(dotnet, "dotnet_toolchains")
+
+register_toolchains("@dotnet_toolchains//:all")
+
+main_extension = use_extension("//generate/paket:paket.main_extension.bzl", "main_extension")
+
+use_repo(main_extension, "paket.main")
+
+steamapps = use_extension("//examples:steamapps.bzl", "steamapps_bzlmod")
+use_repo(steamapps, "scpsl_dedicated_server")
