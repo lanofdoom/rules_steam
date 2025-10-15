@@ -33,7 +33,7 @@ jobs:
           disk-cache: ${{ github.workflow }}
           repository-cache: true
 
-      - run: ./example/update-steamapps.sh
+      - run: ./examples/update-steamapps.sh
 
       - run: bazel mod deps
 

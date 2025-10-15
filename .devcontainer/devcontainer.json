@@ -1,14 +1,15 @@
 {
-  "image": "mcr.microsoft.com/devcontainers/base:bookworm",
+  "image": "mcr.microsoft.com/devcontainers/base:trixie",
   "features": {
-    "ghcr.io/devcontainers-community/npm-features/prettier:1": {},
     "ghcr.io/devcontainers-community/features/bazel:1": {
       "bazelisk_version": "latest",
       "buildifier_version": "latest"
     },
+    "ghcr.io/devcontainers-community/npm-features/prettier:1": {},
     "ghcr.io/devcontainers/features/dotnet": {
       "additionalVersions": "9.0.100"
-    }
+    },
+    "ghcr.io/devcontainers/features/python:1": {}
   },
   "customizations": {
     "vscode": {
