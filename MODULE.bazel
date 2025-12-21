@@ -1,7 +1,7 @@
 module(name = "rules_steam")
 
 bazel_dep(name = "bazel_skylib", version = "1.9.0")
-bazel_dep(name = "rules_pkg", version = "1.1.0")
+bazel_dep(name = "rules_pkg", version = "1.2.0")
 bazel_dep(name = "rules_dotnet", version = "0.21.5")
 
 dotnet = use_extension("@rules_dotnet//dotnet:extensions.bzl", "dotnet")
