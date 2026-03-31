@@ -1,13 +1,13 @@
 load("@rules_steam//:steam.bzl", "steam_app")
 
-BUILD_scpsl_dedicated_server = "22505255"
+BUILD_scpsl_dedicated_server = "22559083"
 
 def repos(ctx):
     steam_app(
         name = "scpsl_dedicated_server",
         depots = [
             {"app": "996560", "depot": "1006", "manifest": "6403079453713498174"},
-            {"app": "996560", "depot": "996562", "manifest": "8044921936894816598"},
+            {"app": "996560", "depot": "996562", "manifest": "1572355382156365953"},
         ],
     )
 
