@@ -33,6 +33,8 @@ bazel mod deps
 
 This script generates a bazel [module extension](https://bazel.build/external/extension) [file](examples/steamapps.bzl) that will create repositories containing Steam apps.
 
+Pass `--files` (repeatable) to limit what gets downloaded, e.g. `--files 'regex:^srcds_linux64$' --files 'regex:^bin/linux64/libsteam_api\.so$'`. Each value becomes a `DepotDownloader` `-filelist` entry (a path, or a `regex:`-prefixed pattern) and is applied to every depot in the generated file.
+
 ### Load generated extension in `MODULE.bazel`
 
 ```python

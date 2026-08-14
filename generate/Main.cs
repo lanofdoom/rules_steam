@@ -26,13 +26,15 @@ def repos(ctx):
         name = ""{{name}}"",
         depots = [
             {{~ for depot in infos ~}}
-            {""app"": ""{{depot.app}}"", ""depot"": ""{{depot.depot}}"", ""manifest"": ""{{depot.manifest}}""},
+            {""app"": ""{{depot.app}}"", ""depot"": ""{{depot.depot}}"", ""manifest"": ""{{depot.manifest}}""{{ if files.size > 0 }}, ""files"": [{{ for f in files }}""{{f}}""{{ if !for.last }}, {{ end }}{{ end }}]{{ end }}},
             {{~ end ~}}
         ],
     )
 
 steamapps_bzlmod = module_extension(implementation = repos)
 ";
+
+  static string EscapeBzlString(string s) => s.Replace("\\", "\\\\").Replace("\"", "\\\"");
 
   static async Task<int> Main(string[] args)
   {
@@ -84,11 +86,19 @@ steamapps_bzlmod = module_extension(implementation = repos)
       getDefaultValue: () => ContentDownloader.DEFAULT_BRANCH);
     rootCommand.AddOption(branchOption);
 
+    var filesOption = new Option<string[]>(
+      name: "--files",
+      description: "DepotDownloader -filelist entry (path, or `regex:`-prefixed pattern) to " +
+        "apply to every generated depot, limiting what is downloaded. May be repeated. " +
+        "Omit to download entire depots.",
+      getDefaultValue: () => Array.Empty<string>());
+    rootCommand.AddOption(filesOption);
+
     logger.LogInformation("Starting DepotDownloader...");
 
     ContentDownloader downloader = new ContentDownloader(logger);
 
-    rootCommand.SetHandler(async (outPath, app, repo, os, arch, branch) =>
+    rootCommand.SetHandler(async (outPath, app, repo, os, arch, branch, files) =>
     {
       downloader.Config.DownloadAllPlatforms = false;
       downloader.Config.DownloadAllArchs = false;
@@ -119,7 +129,8 @@ steamapps_bzlmod = module_extension(implementation = repos)
             app = d.AppId,
             depot = d.DepotId,
             manifest = d.ManifestId
-          })
+          }),
+          Files = files.Select(EscapeBzlString).ToList()
         });
 
         File.WriteAllText(outPath, result);
@@ -130,7 +141,7 @@ steamapps_bzlmod = module_extension(implementation = repos)
       {
         downloader.ShutdownSteam3();
       }
-    }, outOption, appOption, repoOption, osOption, archOption, branchOption);
+    }, outOption, appOption, repoOption, osOption, archOption, branchOption, filesOption);
 
     return await rootCommand.InvokeAsync(args);
   }

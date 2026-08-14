@@ -11,6 +11,9 @@ pkg_files(
 )
 """
 
+# ~4h: enough for a big depot (e.g. CS2, ~100GB)
+_DOWNLOAD_TIMEOUT = 14400
+
 def _steam_depot_impl(repository_ctx):
     repository_ctx.file(
         "BUILD.bazel",
@@ -39,7 +42,7 @@ def _steam_depot_impl(repository_ctx):
         repository_ctx.attr.depot,
         repository_ctx.attr.manifest,
     ))
-    repository_ctx.execute([
+    args = [
         "./DepotDownloader",
         "-app",
         repository_ctx.attr.app,
@@ -49,7 +52,22 @@ def _steam_depot_impl(repository_ctx):
         repository_ctx.attr.manifest,
         "-dir",
         repository_ctx.path(repository_ctx.attr.manifest),
-    ])
+    ]
+
+    if repository_ctx.attr.files:
+        repository_ctx.file("filelist.txt", "\n".join(repository_ctx.attr.files) + "\n")
+        args += ["-filelist", "filelist.txt"]
+
+    result = repository_ctx.execute(args, timeout = _DOWNLOAD_TIMEOUT)
+    if result.return_code != 0:
+        fail("DepotDownloader failed for app:{} depot:{} manifest:{} (exit {})\n{}\n{}".format(
+            repository_ctx.attr.app,
+            repository_ctx.attr.depot,
+            repository_ctx.attr.manifest,
+            result.return_code,
+            result.stdout,
+            result.stderr,
+        ))
 
 _steam_depot = repository_rule(
     implementation = _steam_depot_impl,
@@ -57,6 +75,11 @@ _steam_depot = repository_rule(
         "app": attr.string(mandatory = True),
         "depot": attr.string(mandatory = True),
         "manifest": attr.string(mandatory = True),
+        "files": attr.string_list(
+            doc = "DepotDownloader -filelist entries limiting what is " +
+                  "downloaded. Each entry is a path within the depot, or a " +
+                  "`regex:` prefixed pattern. Empty means the whole depot.",
+        ),
     },
 )
 
@@ -92,7 +115,8 @@ def steam_app(name, depots):
     Args:
         name: The name of the repository.
         depots: A list of depot dictionaries. Each dictionary should contain
-            the keys "app", "depot", and "manifest".
+            the keys "app", "depot", and "manifest", and may optionally
+            contain "files" to download only part of the depot.
     """
     depot_repos_files = []
     for x in depots:
@@ -101,5 +125,6 @@ def steam_app(name, depots):
             app = x["app"],
             depot = x["depot"],
             manifest = x["manifest"],
+            files = x.get("files", []),
         )
     _steam_repo(name = name, depot_repos_files = ["@depot" + x["depot"] for x in depots])
