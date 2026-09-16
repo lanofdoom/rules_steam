@@ -6,7 +6,7 @@ def repos(ctx):
     steam_app(
         name = "scpsl_dedicated_server",
         depots = [
-            {"app": "996560", "depot": "1006", "manifest": "6403079453713498174"},
+            {"app": "996560", "depot": "1006", "manifest": "4559160656493359681"},
             {"app": "996560", "depot": "996562", "manifest": "8852828344330156395"},
         ],
     )
