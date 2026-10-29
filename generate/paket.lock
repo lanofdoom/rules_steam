@@ -55,7 +55,7 @@ NUGET
       Microsoft.Win32.Registry (>= 5.0)
       protobuf-net (>= 3.2.52)
       System.IO.Hashing (>= 9.0.4)
-    System.CommandLine (2.0.0-beta4.22272.1)
+    System.CommandLine (2.0.14)
     System.Diagnostics.DiagnosticSource (10.0.11)
     System.IO.Hashing (10.0.11)
     System.Security.AccessControl (6.0.1)
