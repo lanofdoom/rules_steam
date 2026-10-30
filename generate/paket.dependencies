@@ -3,6 +3,6 @@ source https://api.nuget.org/v3/index.json
 framework: net9.0
 
 nuget Microsoft.Extensions.Logging.Console 9.0.22
-nuget Scriban 6.2.1
+nuget Scriban 6.6.0
 nuget SteamKit2 3.1.0
 nuget System.CommandLine 2.0.14 beta4

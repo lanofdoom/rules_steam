@@ -50,7 +50,7 @@ NUGET
     protobuf-net (3.3.8)
       protobuf-net.Core (>= 3.3.8)
     protobuf-net.Core (3.3.8)
-    Scriban (6.2.1)
+    Scriban (6.6)
     SteamKit2 (3.1)
       Microsoft.Win32.Registry (>= 5.0)
       protobuf-net (>= 3.2.52)
