@@ -49,7 +49,7 @@ NUGET
       protobuf-net.Core (>= 3.4.40)
       System.Collections.Immutable (>= 10.0.13)
     protobuf-net.Core (3.4.40)
-    Scriban (6.6)
+    Scriban (7.5.3)
     SteamKit2 (3.5)
       protobuf-net (>= 3.4.30)
       System.IO.Hashing (>= 10.0.12)
