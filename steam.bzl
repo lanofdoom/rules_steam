@@ -4,7 +4,7 @@ load("@rules_pkg//pkg:mappings.bzl", "pkg_attributes")
 
 pkg_files(
     name = "{repo}",
-    srcs = glob(["{manifest}/**"], exclude = ["**/.DepotDownloader/**"]),
+    srcs = glob(["{manifest}/**"], exclude = ["**/.DepotDownloader/**"], allow_empty = True),
     strip_prefix = "{manifest}",
     visibility = ["//visibility:public"],
     attributes = pkg_attributes(mode = "0755"), # TODO: remove pending https://github.com/bazelbuild/rules_pkg/issues/822
