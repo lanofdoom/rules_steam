@@ -8,17 +8,22 @@
   "customManagers": [
     {
       "customType": "regex",
-      "fileMatch": ["depotdownloader.bzl"],
+      "managerFilePatterns": ["/(^|/)depotdownloader\\.bzl$/"],
       "matchStrings": [
-        "https://github\\.com/(?<depName>.*)/releases/download/(?<currentValue>.*)/.*\\.zip"
+        "_VERSION\\s*=\\s*\"(?<currentValue>v[^\"]+)\""
       ],
+      "depNameTemplate": "lanofdoom/DepotDownloader",
       "datasourceTemplate": "github-releases"
     }
   ],
   "packageRules": [
     {
-      "matchPackageNames": ["SteamRE/DepotDownloader"],
-      "versioning": "regex:^DepotDownloader_v?(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$"
+      "matchPackageNames": ["lanofdoom/DepotDownloader"],
+      "ignoreUnstable": false,
+      "postUpgradeTasks": {
+        "commands": ["python3 tools/update_deps.py depotdownloader {{{newValue}}}"],
+        "fileFilters": ["steam/private/depotdownloader.bzl"]
+      }
     }
   ]
 }
