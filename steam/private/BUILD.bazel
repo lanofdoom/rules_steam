@@ -1,0 +1,26 @@
+load(":targets.bzl", "steam_app_targets", "steam_tar")
+load(":targets_test.bzl", "overlay_test")
+
+steam_app_targets(
+    name = "empty_app",
+    depots = [],
+)
+
+steam_tar(
+    name = "empty_plain_tar",
+    src = ":empty_app",
+    compress = "",
+)
+
+steam_tar(
+    name = "empty_mutated_tar",
+    src = ":empty_app",
+    group = 1000,
+    owner = 1000,
+    package_dir = "/opt/empty",
+)
+
+overlay_test(
+    name = "overlay_test",
+    size = "small",
+)

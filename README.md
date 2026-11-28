@@ -44,17 +44,23 @@ use_repo(steamapps, "my_game_server")
 
 ### Consume the content
 
-Once configured, these rules produce [`pkg_files`](https://bazelbuild.github.io/rules_pkg/latest.html#pkg_files) targets available like `@my_game_server//:files`.
+Each app repository exposes `@my_game_server` (overlaid files + `SteamAppInfo`), `@my_game_server//:tar`, `@my_game_server//:mtree`, and `BUILD_ID` via `load("@my_game_server//:defs.bzl", "BUILD_ID")`, preserving manifest executable permissions and last-depot-wins overlays.
 
-Those rules can be used to produce any of the other [`rules_pkg`](https://bazelbuild.github.io/rules_pkg/latest.html) package formats for further use. For example:
+Use `steam_tar` to package an app into a container layer without declaring `tar.bzl` directly:
 
-```py
-pkg_tar(
-    name = "my_game_server",
-    srcs = ["@my_game_server//:files"],
+```python
+load("@rules_steam//steam:defs.bzl", "steam_tar")
+
+steam_tar(
+    name = "my_game_server_layer",
+    src = "@my_game_server",
     package_dir = "/opt/scpsl",
+    owner = 1000,
+    group = 1000,
 )
 ```
+
+For custom [`tar.bzl`](https://registry.bazel.build/modules/tar.bzl) pipelines, consume `@my_game_server` and `@my_game_server//:mtree` directly.
 
 ### Set up automated updates
 

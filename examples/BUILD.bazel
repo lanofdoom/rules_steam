@@ -1,15 +1,29 @@
 load("@bazel_skylib//rules:build_test.bzl", "build_test")
-load("@rules_pkg//:pkg.bzl", "pkg_tar")
+load("@bazel_skylib//rules:write_file.bzl", "write_file")
+load("@rules_steam//steam:defs.bzl", "steam_tar")
+load("@scpsl_dedicated_server//:defs.bzl", "BUILD_ID")
 
-pkg_tar(
+steam_tar(
     name = "scpsl_dedicated_server_layer",
-    srcs = ["@scpsl_dedicated_server//:files"],
+    src = "@scpsl_dedicated_server",
     package_dir = "/opt/scpsl",
+    owner = 1000,
+    group = 1000,
+)
+
+write_file(
+    name = "image_tag",
+    out = "image_tag.txt",
+    content = ["build" + BUILD_ID],
 )
 
 build_test(
     name = "examples",
     targets = [
+        ":image_tag",
         ":scpsl_dedicated_server_layer",
+        "@scpsl_dedicated_server",
+        "@scpsl_dedicated_server//:mtree",
+        "@scpsl_dedicated_server//:tar",
     ],
 )
