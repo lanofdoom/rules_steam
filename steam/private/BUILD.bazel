@@ -1,3 +1,4 @@
+load(":parse_test.bzl", "parse_test")
 load(":targets.bzl", "steam_app_targets", "steam_tar")
 load(":targets_test.bzl", "overlay_test")
 
@@ -22,5 +23,10 @@ steam_tar(
 
 overlay_test(
     name = "overlay_test",
+    size = "small",
+)
+
+parse_test(
+    name = "parse_test",
     size = "small",
 )

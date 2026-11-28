@@ -5,7 +5,6 @@ These rules make Steam applications available as Bazel repositories.
 Limitations:
 
 - Authentication is not supported so only [free-to-download](https://steamdb.info/sub/17906/apps/) apps may be used
-- External automation is required for application updates
 
 # Setup
 
@@ -40,6 +39,20 @@ Pass `--files` (repeatable) to limit what gets downloaded, e.g. `--files 'regex:
 ```python
 steamapps = use_extension("//:steamapps.bzl", "steamapps_bzlmod")
 use_repo(steamapps, "my_game_server")
+```
+
+### Or declare an unpinned app in `MODULE.bazel`
+
+To pull directly from branch HEAD without generating a lockfile:
+
+```python
+steam = use_extension("@rules_steam//steam:extensions.bzl", "steam")
+steam.app(
+    name = "my_game_server",
+    app = 42,
+    os = "linux",
+)
+use_repo(steam, "my_game_server")
 ```
 
 ### Consume the content
