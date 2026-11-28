@@ -15,5 +15,3 @@ main_extension = use_extension("//generate/paket:paket.main_extension.bzl", "mai
 
 use_repo(main_extension, "paket.main")
 
-steamapps = use_extension("//examples:steamapps.bzl", "steamapps_bzlmod")
-use_repo(steamapps, "scpsl_dedicated_server")
