@@ -7,11 +7,10 @@ pkg_files(
     srcs = glob(["{manifest}/**"], exclude = ["**/.DepotDownloader/**"], allow_empty = True),
     strip_prefix = "{manifest}",
     visibility = ["//visibility:public"],
-    attributes = pkg_attributes(mode = "0755"), # TODO: remove pending https://github.com/bazelbuild/rules_pkg/issues/822
+    attributes = pkg_attributes(mode = "0755"),
 )
 """
 
-# ~4h: enough for a big depot (e.g. CS2, ~100GB)
 _DOWNLOAD_TIMEOUT = 14400
 
 def _steam_depot_impl(repository_ctx):
@@ -23,27 +22,18 @@ def _steam_depot_impl(repository_ctx):
         ),
     )
 
-    if repository_ctx.os.name.startswith("windows"):  # TODO: there must be a better way...
-        repository_ctx.download_and_extract(
-            url = "https://github.com/SteamRE/DepotDownloader/releases/download/DepotDownloader_3.4.0/DepotDownloader-windows-x64.zip",
-            sha256 = "sha256-Qcnp8N9Us60C5noRcmdW5ccyg718LhsErPpa5MLtN2c=",
-        )
-        repository_ctx.file("BUILD", 'alias(name="depotdownloader", actual="DepotDownloader.exe", visibility = ["//visibility:public"])')
-    else:
-        repository_ctx.download_and_extract(
-            url = "https://github.com/SteamRE/DepotDownloader/releases/download/DepotDownloader_3.4.0/DepotDownloader-linux-x64.zip",
-            integrity = "sha256-qZnexmtIUPyWG9UDZmltI8LQ+texh5DmpWR7LxkJelM=",
-        )
-        repository_ctx.execute(["chmod", "+x", "depotdownloader.exe"])
-        repository_ctx.file("BUILD", 'alias(name="depotdownloader", actual="DepotDownloader", visibility = ["//visibility:public"])')
+    dd_dir = repository_ctx.path(repository_ctx.attr._depotdownloader_build).dirname
+    dd_bin = dd_dir.get_child(
+        "DepotDownloader.exe" if repository_ctx.os.name.lower().startswith("windows") else "DepotDownloader",
+    )
 
-    repository_ctx.report_progress("Downlading from Steam app:{} depot:{} manifest:{}".format(
+    repository_ctx.report_progress("Downloading from Steam app:{} depot:{} manifest:{}".format(
         repository_ctx.attr.app,
         repository_ctx.attr.depot,
         repository_ctx.attr.manifest,
     ))
     args = [
-        "./DepotDownloader",
+        dd_bin,
         "-app",
         repository_ctx.attr.app,
         "-depot",
@@ -58,7 +48,13 @@ def _steam_depot_impl(repository_ctx):
         repository_ctx.file("filelist.txt", "\n".join(repository_ctx.attr.files) + "\n")
         args += ["-filelist", "filelist.txt"]
 
-    result = repository_ctx.execute(args, timeout = _DOWNLOAD_TIMEOUT)
+    repository_ctx.file("_home/.keep", "")
+    result = repository_ctx.execute(
+        args,
+        timeout = _DOWNLOAD_TIMEOUT,
+        environment = {"HOME": str(repository_ctx.path("_home"))},
+    )
+
     if result.return_code != 0:
         fail("DepotDownloader failed for app:{} depot:{} manifest:{} (exit {})\n{}\n{}".format(
             repository_ctx.attr.app,
@@ -75,10 +71,9 @@ _steam_depot = repository_rule(
         "app": attr.string(mandatory = True),
         "depot": attr.string(mandatory = True),
         "manifest": attr.string(mandatory = True),
-        "files": attr.string_list(
-            doc = "DepotDownloader -filelist entries limiting what is " +
-                  "downloaded. Each entry is a path within the depot, or a " +
-                  "`regex:` prefixed pattern. Empty means the whole depot.",
+        "files": attr.string_list(),
+        "_depotdownloader_build": attr.label(
+            default = Label("@depotdownloader//:BUILD.bazel"),
         ),
     },
 )
@@ -110,15 +105,6 @@ _steam_repo = repository_rule(
 )
 
 def steam_app(name, depots):
-    """Creates a steam app repository.
-
-    Args:
-        name: The name of the repository.
-        depots: A list of depot dictionaries. Each dictionary should contain
-            the keys "app", "depot", and "manifest", and may optionally
-            contain "files" to download only part of the depot.
-    """
-    depot_repos_files = []
     for x in depots:
         _steam_depot(
             name = "depot" + x["depot"],

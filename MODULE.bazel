@@ -15,3 +15,6 @@ main_extension = use_extension("//generate/paket:paket.main_extension.bzl", "mai
 
 use_repo(main_extension, "paket.main")
 
+
+depotdownloader = use_extension("//steam/private:depotdownloader.bzl", "depotdownloader")
+use_repo(depotdownloader, "depotdownloader")
