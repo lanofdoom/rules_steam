@@ -8,6 +8,8 @@ jobs:
       - uses: actions/checkout@v7
       - name: Run all test targets
         run: bazelisk test -c opt //...
+      - name: Run live pin integration test
+        run: bazelisk test -c opt //steam/private:pin_live_test
       - name: Test examples sub-workspace
         working-directory: examples
         run: bazelisk test -c opt //...

@@ -1,4 +1,26 @@
+load("@rules_python//python:py_binary.bzl", "py_binary")
+
 exports_files([
     "defs.bzl",
     "extensions.bzl",
 ])
+
+py_binary(
+    name = "pin",
+    srcs = ["//steam/private:pin.py"],
+    main = "//steam/private:pin.py",
+    args = [
+        "--depotdownloader",
+        "$(rlocationpath @depotdownloader//:bin)",
+        "--pins",
+        "$(rlocationpath @steam_pins//:pins.json)",
+    ],
+    data = [
+        "@steam_pins//:pins.json",
+        "@depotdownloader//:bin",
+    ],
+    legacy_create_init = 0,
+    python_version = "3.12",
+    visibility = ["//visibility:public"],
+    deps = ["@rules_python//python/runfiles"],
+)

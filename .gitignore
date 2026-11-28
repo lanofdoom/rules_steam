@@ -1,6 +1,3 @@
 /bazel-*
 /examples/bazel-*
-/generate/.paket
-/generate/packages
-/generate/paket-files
 MODULE.bazel.lock

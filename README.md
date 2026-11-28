@@ -8,7 +8,7 @@ Limitations:
 
 # Setup
 
-### Add `rules_steam` to `MODULE.bazel`
+### Add `rules_steam` and declare apps in [`MODULE.bazel`](examples/MODULE.bazel)
 
 ```python
 bazel_dep(name = "rules_steam")
@@ -18,48 +18,28 @@ git_override(
     commit = "...",
     remote = "https://github.com/lanofdoom/rules_steam.git",
 )
-```
 
-### Create [`update-steamapps.sh`](examples/update-steamapps.sh) script
-
-```sh
-#!/bin/bash -ue
-cd $(dirname $0)
-
-bazel run @rules_steam//generate -- --app 42 --repo my_game_server --out $(pwd)/steamapps.bzl
-bazel mod deps
-```
-
-This script generates a bazel [module extension](https://bazel.build/external/extension) [file](examples/steamapps.bzl) that will create repositories containing Steam apps.
-
-Pass `--files` (repeatable) to limit what gets downloaded, e.g. `--files 'regex:^srcds_linux64$' --files 'regex:^bin/linux64/libsteam_api\.so$'`. Each value becomes a `DepotDownloader` `-filelist` entry (a path, or a `regex:`-prefixed pattern) and is applied to every depot in the generated file.
-
-### Load generated extension in `MODULE.bazel`
-
-```python
-steamapps = use_extension("//:steamapps.bzl", "steamapps_bzlmod")
-use_repo(steamapps, "my_game_server")
-```
-
-### Or declare an unpinned app in `MODULE.bazel`
-
-To pull directly from branch HEAD without generating a lockfile:
-
-```python
 steam = use_extension("@rules_steam//steam:extensions.bzl", "steam")
 steam.app(
     name = "my_game_server",
     app = 42,
     os = "linux",
+    lock_file = "//:my_game_server.lock.json",
 )
 use_repo(steam, "my_game_server")
 ```
+
+Run `bazel run @rules_steam//steam:pin` (or `bazel run @rules_steam//steam:pin -- my_game_server` for a single app) to resolve branch `buildId`, depot manifests, and executable permissions into the committed [lockfile](examples/scpsl.lock.json).
+
+Omit `lock_file` to resolve directly from branch HEAD during `bazel build` (cached in `MODULE.bazel.lock`).
+
+Pass `files = [...]` (e.g. `files = ["srcds_linux64", "bin/linux64/libsteam_api.so"]`, or `regex:`-prefixed patterns) to limit downloaded files, and `executables = [...]` to mark additional paths `0755`.
 
 ### Consume the content
 
 Each app repository exposes `@my_game_server` (overlaid files + `SteamAppInfo`), `@my_game_server//:tar`, `@my_game_server//:mtree`, and `BUILD_ID` via `load("@my_game_server//:defs.bzl", "BUILD_ID")`, preserving manifest executable permissions and last-depot-wins overlays.
 
-Use `steam_tar` to package an app into a container layer without declaring `tar.bzl` directly:
+Use `steam_tar` in [`BUILD.bazel`](examples/BUILD.bazel) to package an app into a container layer without declaring `tar.bzl` directly:
 
 ```python
 load("@rules_steam//steam:defs.bzl", "steam_tar")
@@ -77,6 +57,6 @@ For custom [`tar.bzl`](https://registry.bazel.build/modules/tar.bzl) pipelines, 
 
 ### Set up automated updates
 
-Configure automation to periodically run the update script and commit the results.
+Configure automation to periodically run `bazel run @rules_steam//steam:pin` and commit the updated lockfile.
 
 See [update-example.yml](.github/workflows/update-example.yml) for one approach. For annoying reasons, this requires permissions beyond the standard `GITHUB_TOKEN`, so a personal or application token must be used as explained in the [GitHub Docs](https://docs.github.com/en/actions/security-for-github-actions/security-guides/automatic-token-authentication#granting-additional-permissions).

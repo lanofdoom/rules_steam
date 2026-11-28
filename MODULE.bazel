@@ -1,19 +1,16 @@
 module(name = "rules_steam")
 
+bazel_dep(name = "rules_python", version = "2.3.3")
 bazel_dep(name = "tar.bzl", version = "0.10.9")
-bazel_dep(name = "rules_dotnet", version = "0.23.0")
-
-dotnet = use_extension("@rules_dotnet//dotnet:extensions.bzl", "dotnet")
-dotnet.toolchain(dotnet_version = "9.0.100")
-
-use_repo(dotnet, "dotnet_toolchains")
-
-register_toolchains("@dotnet_toolchains//:all")
-
-main_extension = use_extension("//generate/paket:paket.main_extension.bzl", "main_extension")
-
-use_repo(main_extension, "paket.main")
-
 
 depotdownloader = use_extension("//steam/private:depotdownloader.bzl", "depotdownloader")
 use_repo(depotdownloader, "depotdownloader")
+
+steam = use_extension("//steam:extensions.bzl", "steam")
+use_repo(steam, "steam_pins")
+
+python = use_extension("@rules_python//python/extensions:python.bzl", "python")
+python.toolchain(python_version = "3.12")
+
+rules_python_config = use_extension("@rules_python//python/extensions:config.bzl", "config")
+rules_python_config.explicit_init_py(default = True)

@@ -7,5 +7,11 @@ local_path_override(
     path = "..",
 )
 
-steamapps = use_extension("//:steamapps.bzl", "steamapps_bzlmod")
-use_repo(steamapps, "scpsl_dedicated_server")
+steam = use_extension("@rules_steam//steam:extensions.bzl", "steam")
+steam.app(
+    name = "scpsl_dedicated_server",
+    app = 996560,
+    os = "linux",
+    lock_file = "//:scpsl.lock.json",
+)
+use_repo(steam, "scpsl_dedicated_server")

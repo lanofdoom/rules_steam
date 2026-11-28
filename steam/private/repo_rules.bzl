@@ -1,4 +1,4 @@
-visibility("public")
+visibility(["//steam/..."])
 
 _DOWNLOAD_TIMEOUT = 14400
 _TARGETS_BZL = str(Label("//steam/private:targets.bzl"))
@@ -167,3 +167,15 @@ def steam_app(name, depots, build_id):
         depots = depot_targets,
         build_id = build_id,
     )
+
+def _pins_repo_impl(repository_ctx):
+    repository_ctx.file("pins.json", repository_ctx.attr.content + "\n")
+    repository_ctx.file("BUILD.bazel", 'exports_files(["pins.json"], visibility = ["//visibility:public"])\n')
+    return repository_ctx.repo_metadata(reproducible = True)
+
+steam_pins_repo = repository_rule(
+    implementation = _pins_repo_impl,
+    attrs = {
+        "content": attr.string(mandatory = True),
+    },
+)

@@ -1,6 +1,10 @@
+load("@rules_python//python:py_library.bzl", "py_library")
+load("@rules_python//python:py_test.bzl", "py_test")
 load(":parse_test.bzl", "parse_test")
 load(":targets.bzl", "steam_app_targets", "steam_tar")
 load(":targets_test.bzl", "overlay_test")
+
+exports_files(["pin.py"])
 
 steam_app_targets(
     name = "empty_app",
@@ -29,4 +33,37 @@ overlay_test(
 parse_test(
     name = "parse_test",
     size = "small",
+)
+
+py_library(
+    name = "pin_lib",
+    srcs = ["pin.py"],
+    imports = ["."],
+    deps = ["@rules_python//python/runfiles"],
+)
+
+py_test(
+    name = "pin_test",
+    size = "small",
+    srcs = ["pin_test.py"],
+    python_version = "3.12",
+    deps = [":pin_lib"],
+)
+
+py_test(
+    name = "pin_live_test",
+    size = "medium",
+    srcs = ["pin_live_test.py"],
+    args = [
+        "--depotdownloader",
+        "$(rlocationpath @depotdownloader//:bin)",
+    ],
+    data = ["@depotdownloader//:bin"],
+    python_version = "3.12",
+    tags = [
+        "external",
+        "manual",
+        "requires-network",
+    ],
+    deps = [":pin_lib"],
 )

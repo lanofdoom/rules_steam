@@ -1,8 +1,0 @@
-source https://api.nuget.org/v3/index.json
-
-framework: net9.0
-
-nuget Microsoft.Extensions.Logging.Console 11.0.0
-nuget Scriban 7.6.1
-nuget SteamKit2 3.5.0
-nuget System.CommandLine 3.0.0 beta4

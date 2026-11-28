@@ -1,0 +1,17 @@
+{
+  "appId": 996560,
+  "branch": "public",
+  "os": "linux",
+  "arch": "64",
+  "buildId": 26443947,
+  "depots": [
+    {
+      "depotId": 1006,
+      "manifestId": "4559160656493359681"
+    },
+    {
+      "depotId": 996562,
+      "manifestId": "7659625077094485178"
+    }
+  ]
+}

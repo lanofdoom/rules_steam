@@ -6,17 +6,13 @@
       "buildifier_version": "latest"
     },
     "ghcr.io/devcontainers-community/npm-features/prettier:1": {},
-    "ghcr.io/devcontainers/features/dotnet": {
-      "additionalVersions": "9.0.100"
-    },
     "ghcr.io/devcontainers/features/python:1": {}
   },
   "customizations": {
     "vscode": {
       "extensions": [
         "BazelBuild.vscode-bazel",
-        "esbenp.prettier-vscode",
-        "ms-dotnettools.csdevkit"
+        "esbenp.prettier-vscode"
       ]
     }
   }

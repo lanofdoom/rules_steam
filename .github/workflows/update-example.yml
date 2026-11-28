@@ -12,7 +12,7 @@ jobs:
       - uses: actions/create-github-app-token@v3
         id: app-token
         with:
-          app-id: "${{ vars.RENOVATE_APP_ID }}"
+          app-id: "${{ secrets.RENOVATE_APP_ID || vars.RENOVATE_APP_ID }}"
           private-key: "${{ secrets.RENOVATE_APP_PRIVATE_KEY }}"
       - name: Get GitHub App User ID
         id: get-user-id
@@ -33,7 +33,13 @@ jobs:
           disk-cache: ${{ github.workflow }}
           repository-cache: true
 
-      - run: ./examples/update-steamapps.sh
+      - name: Update example lockfile
+        working-directory: examples
+        run: bazelisk run @rules_steam//steam:pin
+
+      - name: Verify updated example builds
+        working-directory: examples
+        run: bazelisk test -c opt //...
 
 
       - name: Check for changes
@@ -48,5 +54,5 @@ jobs:
       - name: Commit & push changes
         if: steps.git-check.outputs.changed == 'true'
         run: |
-          git commit -m "Update example to build $(grep -oP 'BUILD_\w+\s*=\s*"\K\d+' steamapps.bzl)"
+          git commit -m "Update example to build $(jq -r .buildId examples/scpsl.lock.json)"
           git push
